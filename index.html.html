@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1b2a">
+<title>PATROL-TERRAIN</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1b2a;--surf:#112236;--card:#162d42;--border:#1e3a52;--accent:#00c8e0;--red:#e74c3c;--green:#2ecc71;--yellow:#f0a500;--purple:#9b59b6;--text:#e8f4f8;--muted:#5a8099;--mono:'Share Tech Mono',monospace;--sans:'Exo 2',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;overflow-x:hidden}
+.topbar{position:sticky;top:0;z-index:200;background:var(--surf);border-bottom:2px solid var(--border);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tlogo{font-family:var(--mono);color:var(--accent);font-size:14px;font-weight:700;letter-spacing:2px}
+.tsub{font-family:var(--mono);color:var(--muted);font-size:10px}
+.page{display:none;padding:14px;max-width:640px;margin:0 auto;padding-bottom:80px}
+.page.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+.ca{border-left:4px solid var(--accent)}.cg{border-left:4px solid var(--green)}.cy{border-left:4px solid var(--yellow)}.cr{border-left:4px solid var(--red)}
+.lbl{display:block;font-family:var(--mono);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px;margin:12px 0 4px}
+input,textarea,select{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:11px 13px;border-radius:8px;width:100%;font-family:var(--sans);font-size:14px;outline:none;-webkit-appearance:none}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+select option{background:var(--card)}
+textarea{resize:vertical;min-height:58px}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;border-radius:10px;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:700;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.btn:active{filter:brightness(.8)}
+.bbl{width:100%;margin-bottom:10px;padding:16px;font-size:15px}
+.bp{background:var(--accent);color:#000}.bg{background:var(--green);color:#000}.br{background:var(--red);color:#fff}.by{background:var(--yellow);color:#000}.bo{background:transparent;border:1.5px solid var(--muted);color:var(--muted)}.bsm{padding:8px 14px;font-size:12px;border-radius:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{padding:10px 14px;border-radius:8px;border:1.5px solid;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:600;touch-action:manipulation;background:transparent;color:var(--muted)}
+.chip:active{filter:brightness(.8)}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700;color:#fff}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.tbtn{padding:12px 10px;border-radius:9px;border:1.5px solid;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:600;text-align:left;touch-action:manipulation;background:var(--card);color:var(--muted)}
+.tbtn:active{filter:brightness(.8)}
+.gbox{background:rgba(0,200,224,.07);border:1px solid rgba(0,200,224,.2);border-radius:8px;padding:10px 12px;display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.gdot{width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:3px}
+.gdot.s{background:var(--yellow);animation:blink 1s infinite}
+.gdot.e{background:var(--red)}
+.gtxt{font-family:var(--mono);font-size:11px;color:var(--accent);line-height:1.8;flex:1}
+.srow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.sbox{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 4px;text-align:center}
+.sn{font-size:24px;font-weight:800}.sl{font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;margin-top:2px}
+.ocard{background:var(--card);border:1px solid var(--border);border-left:4px solid;border-radius:10px;padding:12px;margin-bottom:8px}
+.oh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.oth{width:54px;height:42px;object-fit:cover;border-radius:5px;flex-shrink:0}
+.ometa{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;font-size:11px;color:var(--muted)}
+.flash{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--green);color:#000;padding:16px 32px;border-radius:12px;font-size:20px;font-weight:800;z-index:9999;pointer-events:none;display:none}
+.stitle{font-family:var(--mono);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:2px;margin:14px 0 8px}
+.cbox{background:rgba(0,200,224,.07);border:1px solid rgba(0,200,224,.25);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.signimg{width:64px;height:64px;object-fit:contain;border-radius:6px;background:#fff;flex-shrink:0;border:1px solid var(--border)}
+.signrow{display:flex;align-items:center;gap:12px;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:6px}
+/* Caméra overlay plein écran */
+#cam-wrap{display:none;position:fixed;inset:0;background:#000;z-index:500;flex-direction:column}
+#cam-wrap.active{display:flex}
+#camvid{width:100%;flex:1;object-fit:cover;display:block}
+.cambar{padding:16px 20px;background:rgba(13,27,42,.92);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.shutter{width:72px;height:72px;border-radius:50%;background:#fff;border:5px solid rgba(255,255,255,.35);cursor:pointer;font-size:30px;display:flex;align-items:center;justify-content:center;touch-action:manipulation;flex-shrink:0}
+.shutter:active{transform:scale(.88)}
+#camcvs{display:none}
+.camframe{position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);width:72%;aspect-ratio:1;border:2px solid rgba(0,200,224,.6);border-radius:8px;pointer-events:none}
+.camgps{position:absolute;top:70px;right:10px;background:rgba(13,27,42,.85);border:1px solid var(--accent);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:10px;color:var(--accent);line-height:1.7;max-width:170px;pointer-events:none}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="flash" id="flash">✅ Enregistré</div>
+
+<!-- ══ ACCUEIL ══════════════════════════════════════════════════════════ -->
+<div id="p-home" class="page active">
+  <div class="topbar"><div><div class="tlogo">🛣️ PATROL</div><div class="tsub">VERSION TERRAIN — SANS IA</div></div><div style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:right" id="home-date"></div></div>
+  <div style="padding:14px;max-width:640px;margin:0 auto">
+    <div style="background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.25);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--muted);margin:8px 0 12px">
+      ✅ Aucun compte requis · GPS + Caméra + Cadastre<br>
+      <span style="color:var(--green);font-weight:bold">📡 Mode autonome :</span> installez <b style="color:#fff">KWS - Quick HTTP Server</b> (Play Store) → pointez sur ce fichier → ouvrez <b style="color:var(--accent)">http://192.168.x.x:8080</b> dans Chrome
+    </div>
+    <div class="card ca">
+      <div style="font-family:var(--mono);color:var(--accent);font-size:11px;letter-spacing:2px;margin-bottom:14px">NOUVELLE PATROUILLE</div>
+      <label class="lbl">Agent / Patrouilleur</label><input id="inp-agent" type="text" placeholder="Nom prénom" autocomplete="name">
+      <label class="lbl">Route principale (RD)</label><input id="inp-rd" type="text" placeholder="ex: RD 12" autocomplete="off">
+      <label class="lbl">Véhicule / Immatriculation</label><input id="inp-vehicule" type="text" placeholder="ex: AA-123-BB" autocomplete="off">
+      <button class="btn bg bbl" style="margin-top:18px" onclick="startPatrol()">🚗 DÉMARRER LA PATROUILLE</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PATROUILLE ═══════════════════════════════════════════════════════ -->
+<div id="p-patrol" class="page">
+  <div class="topbar"><div><div class="tlogo" style="font-size:13px">EN PATROUILLE</div><div class="tsub" id="patrol-sub" style="color:var(--green)">● ACTIF</div></div></div>
+  <div style="padding:14px;max-width:640px;margin:0 auto;padding-bottom:80px">
+    <div class="gbox"><div class="gdot s" id="gdot"></div><div class="gtxt" id="gtxt">Activation GPS…</div></div>
+    <div class="card ca">
+      <div class="r2">
+        <div><label class="lbl">Route RD</label><input id="cur-rd" type="text" placeholder="RD 12" oninput="S.curRD=this.value"></div>
+        <div><label class="lbl">Point repère (PR)</label><input id="cur-pr" type="text" placeholder="PR 2+450" oninput="S.curPR=this.value"></div>
+      </div>
+    </div>
+    <!-- Boutons photo — déclenchement JS natif Android -->
+    <button class="btn bp bbl" onclick="triggerCamera('sign')">📷 PHOTOGRAPHIER UN PANNEAU</button>
+    <button class="btn by bbl" style="color:#000" onclick="triggerCamera('damage')">📷 PHOTOGRAPHIER UN DOMMAGE</button>
+    <button class="btn bbl" style="background:#1a3d1a;color:#5ddb5d;border:1.5px solid #2ecc71" onclick="triggerCamera('tree')">📷 PHOTOGRAPHIER UN ARBRE DANGEREUX</button>
+    <div class="r2" style="margin-bottom:10px">
+      <button class="btn bo" onclick="goSign()">✏️ Saisir panneau</button>
+      <button class="btn bo" onclick="goDamage()">✏️ Saisir dommage</button>
+    </div>
+    <button class="btn bo bbl" style="border-color:#2ecc71;color:#2ecc71" onclick="goTree()">🌳 Saisir arbre dangereux</button>
+    <div class="srow" style="grid-template-columns:repeat(4,1fr)">
+      <div class="sbox"><div class="sn" style="color:var(--accent)" id="st-s">0</div><div class="sl">Panneaux</div></div>
+      <div class="sbox"><div class="sn" style="color:var(--yellow)" id="st-d">0</div><div class="sl">Dommages</div></div>
+      <div class="sbox"><div class="sn" style="color:#2ecc71" id="st-t">0</div><div class="sl">Arbres</div></div>
+      <div class="sbox"><div class="sn" style="color:var(--red)" id="st-u">0</div><div class="sl">Urgents</div></div>
+    </div>
+    <div class="stitle">Dernières observations</div>
+    <div id="patrol-obs"></div>
+    <button class="btn br bbl" style="margin-top:12px" onclick="endPatrol()">⏹ TERMINER — RAPPORT</button>
+  </div>
+</div>
+
+<!-- ══ PANNEAU ══════════════════════════════════════════════════════════ -->
+<div id="p-sign" class="page">
+  <div class="topbar"><button class="btn bo bsm" onclick="goPatrol()">← Retour</button><span class="tlogo" style="font-size:13px">🚦 PANNEAU</span><span class="tsub" id="sign-loc"></span></div>
+  <div style="padding:14px;max-width:640px;margin:0 auto;padding-bottom:80px">
+    <div id="sign-prev"></div>
+    <button class="btn bp bbl" onclick="triggerCamera('sign')">📷 Prendre une photo</button>
+
+    <div class="r2">
+      <div><label class="lbl">Route RD</label><input id="s-rd" type="text" placeholder="RD 12"></div>
+      <div><label class="lbl">Point repère PR</label><input id="s-pr" type="text" placeholder="PR 2+450"></div>
+    </div>
+    <div class="r2">
+      <div><label class="lbl">Côté</label>
+        <select id="s-side"><option value="">--</option><option>Droite</option><option>Gauche</option><option>Les deux</option><option>Central</option></select>
+      </div>
+      <div><label class="lbl">Sens</label>
+        <select id="s-dir"><option value="">--</option><option>Aller</option><option>Retour</option><option>Les deux sens</option></select>
+      </div>
+    </div>
+
+    <label class="lbl">Catégorie</label>
+    <select id="s-cat" onchange="renderSignTypes()">
+      <option value="">-- Catégorie --</option>
+      <option>Danger</option><option>Interdiction / Priorité</option><option>Obligation</option><option>Indication</option><option>Direction / Localisation</option><option>Environnement / Services</option>
+    </select>
+    <label class="lbl">Type de panneau</label>
+    <select id="s-type"><option value="">-- Choisir catégorie d'abord --</option></select>
+
+    <!-- Aperçu visuel du panneau sélectionné -->
+    <div id="sign-visual-wrap" style="display:none;margin-top:10px">
+      <div style="display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px">
+        <img id="sign-visual-img" src="" alt="" class="signimg">
+        <div>
+          <div style="font-weight:700;font-size:13px" id="sign-visual-label"></div>
+          <div style="color:var(--muted);font-size:11px;margin-top:4px" id="sign-visual-desc"></div>
+        </div>
+      </div>
+    </div>
+
+    <label class="lbl">État du panneau</label>
+    <div class="chips" id="sign-states"></div>
+    <input type="hidden" id="s-state">
+
+    <label class="lbl">Défauts</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px" id="sign-defects">
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="chk-rouille" style="width:auto"> Rouille</label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="chk-vandal" style="width:auto"> Vandalisme</label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="chk-incline" style="width:auto"> Incliné</label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="chk-veg" style="width:auto"> Masqué végétation</label>
+    </div>
+
+    <label class="lbl">Priorité</label>
+    <div class="chips" id="sign-priority"></div>
+    <input type="hidden" id="s-priority">
+
+    <!-- Ajout / suppression panneau custom -->
+    <div class="stitle" style="margin-top:16px">Panneaux personnalisés</div>
+    <div id="custom-sign-list"></div>
+    <div class="r2" style="gap:8px;margin-top:6px">
+      <input id="new-sign-code" type="text" placeholder="Code ex: B20" style="font-size:12px;padding:9px">
+      <input id="new-sign-label" type="text" placeholder="Libellé" style="font-size:12px;padding:9px">
+    </div>
+    <button class="btn bo bsm" style="margin-top:6px;border-color:var(--accent);color:var(--accent)" onclick="addCustomSign()">+ Ajouter ce type</button>
+
+    <label class="lbl">Notes</label>
+    <textarea id="s-notes" placeholder="Observations complémentaires…"></textarea>
+    <button class="btn bg bbl" style="margin-top:16px" onclick="saveSign()">✅ ENREGISTRER LE PANNEAU</button>
+  </div>
+</div>
+
+<!-- ══ DOMMAGE ══════════════════════════════════════════════════════════ -->
+<div id="p-damage" class="page">
+  <div class="topbar"><button class="btn bo bsm" onclick="goPatrol()">← Retour</button><span class="tlogo" style="font-size:13px">🛣️ DOMMAGE</span><span class="tsub" id="dmg-loc"></span></div>
+  <div style="padding:14px;max-width:640px;margin:0 auto;padding-bottom:80px">
+    <div id="dmg-prev"></div>
+    <button class="btn by bbl" style="color:#000" onclick="triggerCamera('damage')">📷 Prendre une photo</button>
+
+    <div class="r2">
+      <div><label class="lbl">Route RD</label><input id="d-rd" type="text" placeholder="RD 12"></div>
+      <div><label class="lbl">Point repère PR</label><input id="d-pr" type="text" placeholder="PR 2+450"></div>
+    </div>
+    <div class="r2">
+      <div><label class="lbl">Voie concernée</label>
+        <select id="d-voie"><option value="">--</option><option>Voie 1 (aller)</option><option>Voie 2 (retour)</option><option>Les deux voies</option><option>Accotement droit</option><option>Accotement gauche</option><option>Carrefour</option></select>
+      </div>
+      <div><label class="lbl">Surface estimée</label><input id="d-surface" type="text" placeholder="ex: 2 m²"></div>
+    </div>
+
+    <label class="lbl">Type de dommage</label>
+    <div class="tgrid" id="dmg-types"></div>
+    <input type="hidden" id="d-type">
+
+    <div id="d-sev-wrap" style="display:none">
+      <label class="lbl">Gravité</label>
+      <div class="chips" id="dmg-sev"></div>
+      <input type="hidden" id="d-sev">
+    </div>
+
+    <!-- Section de route pour Remontée de liant -->
+    <div id="d-section-wrap" style="display:none">
+      <label class="lbl">Section de route concernée</label>
+      <div class="r2">
+        <div><label class="lbl" style="margin-top:4px">Du PR</label><input id="d-pr-debut" type="text" placeholder="ex: PR 3+000"></div>
+        <div><label class="lbl" style="margin-top:4px">Au PR</label><input id="d-pr-fin" type="text" placeholder="ex: PR 3+850"></div>
+      </div>
+    </div>
+
+    <label class="lbl">Priorité</label>
+    <div class="chips" id="dmg-priority"></div>
+    <input type="hidden" id="d-priority">
+
+    <label class="lbl">Évolution estimée</label>
+    <select id="d-evol"><option value="">--</option><option>Stable</option><option>Évolution lente</option><option>Évolution rapide</option><option>Critique — dangereux</option></select>
+
+    <label class="lbl">Notes</label>
+    <textarea id="d-notes" placeholder="Description, localisation précise…"></textarea>
+    <button class="btn by bbl" style="color:#000;margin-top:16px" onclick="saveDamage()">✅ ENREGISTRER LE DOMMAGE</button>
+  </div>
+</div>
+
+<!-- ══ ARBRE ════════════════════════════════════════════════════════════ -->
+<div id="p-tree" class="page">
+  <div class="topbar"><button class="btn bo bsm" onclick="goPatrol()">← Retour</button><span class="tlogo" style="font-size:13px;color:#2ecc71">🌳 ARBRE</span><span class="tsub" id="tree-loc"></span></div>
+  <div style="padding:14px;max-width:640px;margin:0 auto;padding-bottom:80px">
+    <div id="tree-prev"></div>
+    <button class="btn bbl" style="background:#1a3d1a;color:#5ddb5d;border:1.5px solid #2ecc71" onclick="triggerCamera('tree')">📷 Prendre une photo</button>
+
+    <!-- GPS + Cadastre -->
+    <div class="gbox"><div class="gdot s" id="tree-gdot"></div><div class="gtxt" id="tree-gtxt">GPS en attente…</div></div>
+    <div class="cbox">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px">📐 Parcelle cadastrale</div>
+        <button class="btn bsm" style="background:rgba(0,200,224,.15);color:var(--accent);border:1px solid rgba(0,200,224,.3)" onclick="fetchCadastre()">🔍 Interroger</button>
+      </div>
+      <div id="cad-result" style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:6px;line-height:1.8">GPS requis</div>
+    </div>
+    <input type="hidden" id="t-cad-sec"><input type="hidden" id="t-cad-num"><input type="hidden" id="t-cad-com"><input type="hidden" id="t-cad-surf">
+
+    <div class="r2">
+      <div><label class="lbl">Route RD</label><input id="t-rd" type="text" placeholder="RD 12"></div>
+      <div><label class="lbl">Point repère PR</label><input id="t-pr" type="text" placeholder="PR 2+450"></div>
+    </div>
+    <div class="r2">
+      <div><label class="lbl">Côté de la route</label>
+        <select id="t-side"><option value="">--</option><option>Droite</option><option>Gauche</option><option>Les deux côtés</option><option>Talus</option><option>Fossé</option><option>Propriété riveraine</option></select>
+      </div>
+      <div><label class="lbl">Distance chaussée</label>
+        <select id="t-dist"><option value="">--</option><option>Sur chaussée</option><option>Accotement (&lt;1m)</option><option>Bord (&lt;3m)</option><option>Talus (3-10m)</option><option>&gt;10m</option></select>
+      </div>
+    </div>
+
+    <label class="lbl">Type de danger</label>
+    <div class="tgrid" id="tree-types"></div>
+    <input type="hidden" id="t-danger">
+    <div id="t-sev-wrap" style="display:none">
+      <label class="lbl">Niveau de risque</label>
+      <div class="chips" id="tree-sev"></div>
+      <input type="hidden" id="t-sev">
+    </div>
+
+    <label class="lbl">Priorité</label>
+    <div class="chips" id="tree-priority"></div>
+    <input type="hidden" id="t-priority">
+
+    <label class="lbl">Action préconisée</label>
+    <select id="t-action"><option value="">--</option><option>Abattage immédiat</option><option>Abattage programmé</option><option>Élagage d'urgence</option><option>Élagage programmé</option><option>Surveillance renforcée</option><option>Étaiement / sécurisation</option><option>Diagnostic expert arboriste</option></select>
+
+    <label class="lbl">Notes</label>
+    <textarea id="t-notes" placeholder="Observations complémentaires…"></textarea>
+    <button class="btn bg bbl" style="margin-top:16px" onclick="saveTree()">✅ ENREGISTRER L'ARBRE</button>
+  </div>
+</div>
+
+<!-- ══ RAPPORT ══════════════════════════════════════════════════════════ -->
+<div id="p-report" class="page">
+  <div class="topbar"><button class="btn bo bsm" onclick="goPatrol()">← Patrouille</button><span class="tlogo" style="font-size:13px">📋 RAPPORT</span><button class="btn bg bsm" onclick="printReport()">🖨️ Imprimer</button></div>
+  <div style="padding:14px;max-width:640px;margin:0 auto;padding-bottom:80px">
+    <div class="card ca" id="rep-meta"></div>
+    <div class="srow" style="grid-template-columns:repeat(4,1fr)" id="rep-stats"></div>
+    <div class="stitle">🌳 Arbres</div><div id="rep-trees"></div>
+    <div class="stitle">🚦 Panneaux</div><div id="rep-signs"></div>
+    <div class="stitle">🛣️ Dommages</div><div id="rep-dmg"></div>
+    <button class="btn bo bbl" style="margin-top:14px" onclick="newPatrol()">🏠 Nouvelle patrouille</button>
+  </div>
+</div>
+
+<script>
+// ══ DONNÉES ══════════════════════════════════════════════════════════════════
+const SIGN_TYPES = {
+  "Danger":[
+    "A1a - Virage à droite","A1b - Virage à gauche","A2 - Suite de virages",
+    "A3a - Cassis","A3b - Dos d'âne","A4 - Chaussée rétrécie",
+    "A5 - Rétrécie à droite","A6 - Rétrécie à gauche",
+    "A7 - Profil en long accidenté","A8 - Chaussée glissante",
+    "A9 - Débris sur la chaussée","A10 - Vent latéral",
+    "A11a - Pont mobile","A11b - Bac ou pont flottant",
+    "A13a - Descente dangereuse","A13b - Montée dangereuse",
+    "A14 - Débouché sur chaussée","A15a - Intersection en T",
+    "A15b - Intersection en Y","A15c - Intersection en X",
+    "A15d - Intersection à sens giratoire","A16 - Feux de circulation",
+    "A17 - Passage à niveau sans barrières","A18 - Passage à niveau avec barrières",
+    "A19a - Passage piétons","A19b - Enfants","A19c - École",
+    "A20 - Cyclistes","A21 - Animaux sauvages","A22 - Animaux domestiques",
+    "A23 - Chute de pierres","A24 - Quai ou berge","A25 - Aéroport",
+    "A26 - Traversée de pompiers","A27 - Cavaliers","A28 - Travaux",
+    "A29 - Bouchon","A30 - Danger non désigné"],
+  "Interdiction / Priorité":[
+    "B0 - Circulation interdite","B1 - Sens interdit",
+    "B2a - Stop","B2b - Cédez le passage",
+    "B3 - Interdit dépasser","B4a - Fin d'interdiction dépasser",
+    "B5 - Priorité sur voie étroite","B6a - Arrêt et stationnement interdit",
+    "B6b - Stationnement interdit","B6c - Alterné semi-mensuel",
+    "B6d - Zone stationnement interdit","B7a - Interdit aux piétons",
+    "B7b - Interdit aux cycles","B7c - Interdit cyclomoteurs",
+    "B7d - Interdit motocycles","B7e - Interdit véh. à traction animale",
+    "B8 - Interdit engins de chantier","B9a - Interdit PL",
+    "B9b - Interdit véhicules long","B9c - Interdit véhicules lourds",
+    "B10a - Interdit véhicules haut","B10b - Interdit véhicules large",
+    "B11 - Interdit véhicules avec remorque",
+    "B13 - Interdit demi-tour",
+    "B14 - Vitesse 10","B14 - Vitesse 20","B14 - Vitesse 30",
+    "B14 - Vitesse 40","B14 - Vitesse 50","B14 - Vitesse 60",
+    "B14 - Vitesse 70","B14 - Vitesse 80","B14 - Vitesse 90",
+    "B14 - Vitesse 100","B14 - Vitesse 110","B14 - Vitesse 130",
+    "B15 - Fin de limitation de vitesse",
+    "B16 - Fin interdiction dépassement",
+    "B17a - Priorité à la circulation venant en face",
+    "B18 - Interdit klaxon","B19 - Interdit feux de route"],
+  "Obligation":[
+    "C1 - Tout droit obligatoire","C2 - Droite obligatoire",
+    "C3 - Gauche obligatoire","C4 - Tout droit ou droite",
+    "C5 - Tout droit ou gauche","C6 - Droite ou gauche",
+    "C7 - Contournement droit","C8 - Contournement gauche",
+    "C9 - Rond-point","C10 - Piste cyclable obligatoire",
+    "C11 - Chemin piétons obligatoire","C12 - Voie réservée cavaliers",
+    "C13 - Vitesse minimale","C14 - Fin vitesse minimale",
+    "C15 - Chaînes obligatoires","C16 - Pneus neige obligatoires"],
+  "Indication":[
+    "D1 - Route à grande circulation","D2 - Fin de route",
+    "D3a - Passage protégé","D3b - Passage piétons en attente",
+    "D4 - Présignalisation passage protégé",
+    "D5 - Zone 30","D6 - Fin zone 30",
+    "D7 - Zone à vitesse limitée","D8 - Fin zone à vitesse limitée",
+    "D9a - Début agglomération","D9b - Fin agglomération",
+    "D10 - Parking","D10a - Parking payant","D10b - Horodateur",
+    "D10c - Parking PL","D10d - Parking 2 roues",
+    "D11 - Aire de repos","D12 - Aire de service",
+    "D13 - Hôpital","D14 - Poste de secours",
+    "D15 - Poste de gendarmerie","D16 - Poste de police",
+    "D17 - Zone de rencontre","D18 - Fin zone de rencontre",
+    "D19 - Zone résidentielle","D20 - Fin zone résidentielle",
+    "D21 - Passage à niveau","D22 - Voie sans issue",
+    "D23 - Cul-de-sac aménagé","D24 - Signaux de détresse",
+    "D25 - Chemin obligatoire piétons",
+    "D26 - Présignalisation cédez le passage rond-point"],
+  "Direction / Localisation":[
+    "CE1 - Présignalisation","CE2 - Direction",
+    "CE3 - Confirmation direction","CE4 - Localisation",
+    "CE5 - Impasse","CE6 - Sortie d'autoroute",
+    "CE7 - Jalonnement","CE8 - Borne kilométrique",
+    "CE9 - Panneau de distance","CE10 - Bifurcation",
+    "CE11 - Signalisation avancée","CE12 - Sortie de zone"],
+  "Environnement / Services":[
+    "E1 - Camping","E2 - Auberge de jeunesse",
+    "E3 - Hôtel/Motel","E4 - Restaurant",
+    "E5 - Café/Bar","E6 - Station-service",
+    "E7 - Poste téléphonique","E8 - Point eau potable",
+    "E9 - Poste de premiers secours","E10 - WC public",
+    "E11 - Point de vue","E12 - Curiosité touristique",
+    "E13 - Office de tourisme","E14 - Parking vélos",
+    "E15 - Borne de recharge électrique"]
+};
+
+// Couleurs de panneaux par catégorie pour les visuels SVG
+const SIGN_COLORS = {
+  "Danger":{"bg":"#e74c3c","border":"#c0392b","shape":"triangle"},
+  "Interdiction / Priorité":{"bg":"#e74c3c","border":"#c0392b","shape":"circle"},
+  "Obligation":{"bg":"#3498db","border":"#2471a3","shape":"circle"},
+  "Indication":{"bg":"#27ae60","border":"#1e8449","shape":"rect"},
+  "Direction / Localisation":{"bg":"#27ae60","border":"#1e8449","shape":"rect"},
+  "Environnement / Services":{"bg":"#f0a500","border":"#d68910","shape":"rect"}
+};
+
+function getSignSVG(cat,label){
+  const c=SIGN_COLORS[cat]||{bg:"#888",border:"#555",shape:"rect"};
+  const code=label.split(" - ")[0]||label;
+  if(c.shape==="triangle"){
+    return`<svg width="64" height="64" viewBox="0 0 64 64"><polygon points="32,4 62,60 2,60" fill="${c.bg}" stroke="${c.border}" stroke-width="3"/><text x="32" y="50" text-anchor="middle" fill="#fff" font-size="11" font-family="Arial" font-weight="bold">${code}</text></svg>`;
+  }else if(c.shape==="circle"){
+    return`<svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="${c.bg}" stroke="${c.border}" stroke-width="3"/><text x="32" y="38" text-anchor="middle" fill="#fff" font-size="11" font-family="Arial" font-weight="bold">${code}</text></svg>`;
+  }else{
+    return`<svg width="64" height="64" viewBox="0 0 64 64"><rect x="4" y="4" width="56" height="56" rx="4" fill="${c.bg}" stroke="${c.border}" stroke-width="3"/><text x="32" y="36" text-anchor="middle" fill="#fff" font-size="10" font-family="Arial" font-weight="bold">${code}</text></svg>`;
+  }
+}
+
+const DAMAGES=[
+  {n:"Nid de poule",       ic:"⭕",col:"#e74c3c",sev:["Petit (<10cm)","Moyen (10-30cm)","Grand (>30cm)","Très grand (>50cm)"]},
+  {n:"Faïençage",          ic:"🕸️",col:"#d35400",sev:["Léger","Modéré","Grave"]},
+  {n:"Fissuration",        ic:"〰️",col:"#e67e22",sev:["Fine (<3mm)","Moyenne","Large (>10mm)"]},
+  {n:"Affaissement rive",  ic:"📉",col:"#8e44ad",sev:["Léger","Modéré","Grave"]},
+  {n:"Pelade",             ic:"🔴",col:"#c0392b",sev:["Localisée","Étendue","Généralisée"]},
+  {n:"Plumage",            ic:"🪶",col:"#7f8c8d",sev:["Débutant","Modéré","Avancé"]},
+  {n:"Ornière",            ic:"↕️",col:"#16a085",sev:["<2cm","2-4cm",">4cm"]},
+  {n:"Déformation",        ic:"🌊",col:"#2980b9",sev:["Légère","Modérée","Grave"]},
+  {n:"Remontée de liant",  ic:"🫧",col:"#f39c12",sev:["Légère","Modérée","Grave"],section:true},
+];
+
+const TREE_DANGERS=[
+  {n:"Arbre mort / dépérissant",   ic:"💀",col:"#7f8c8d",sev:["Risque faible","Risque modéré","Risque élevé","Risque immédiat"]},
+  {n:"Arbre incliné vers route",    ic:"↗️",col:"#e67e22",sev:["Inclinaison légère","Inclinaison modérée","Chute imminente"]},
+  {n:"Chablis / arbre tombé",       ic:"🌲",col:"#e74c3c",sev:["Sur accotement","Obstruction partielle","Obstruction totale"]},
+  {n:"Branche dangereuse",          ic:"🌿",col:"#d35400",sev:["Risque faible","Risque modéré","Chute imminente"]},
+  {n:"Pourriture / champignon",     ic:"🍄",col:"#8e44ad",sev:["Débutant","Modérée","Avancée — critique"]},
+  {n:"Racines / dégradation sol",   ic:"🌱",col:"#16a085",sev:["Légère","Modérée","Grave"]},
+  {n:"Masque signalisation",        ic:"🚦",col:"#f0a500",sev:["Partiel","Important","Total"]},
+  {n:"Conflit réseau aérien",       ic:"⚡",col:"#e74c3c",sev:["Contact potentiel","Contact probable","Contact avéré"]},
+];
+
+const STATES=[{v:"Bon",c:"#27ae60",i:"✅"},{v:"Dégradé",c:"#f0a500",i:"⚠️"},{v:"Manquant",c:"#e74c3c",i:"❌"},{v:"À remplacer",c:"#8e44ad",i:"🔄"},{v:"Illisible",c:"#7f8c8d",i:"🚫"}];
+const PRIOS=[{v:"Urgent (<48h)",c:"#e74c3c"},{v:"Court terme (1 mois)",c:"#f0a500"},{v:"Planifié (6 mois)",c:"#2980b9"},{v:"Surveillance",c:"#7f8c8d"}];
+
+// Panneaux personnalisés (persistés dans localStorage)
+let customSigns = JSON.parse(localStorage.getItem('customSigns')||'[]');
+
+// ══ STATE ═════════════════════════════════════════════════════════════════════
+let S={
+  screen:"home",agent:"",rd:"",vehicule:"",
+  patrolStart:null,observations:[],
+  curRD:"",curPR:"",
+  gps:{lat:null,lon:null,acc:null,ok:false},
+  gpsWatchId:null,gpsOrigin:null,
+  photos:{sign:"",damage:"",tree:""},
+};
+
+// ══ NAVIGATION ════════════════════════════════════════════════════════════════
+function show(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  S.screen=id;
+  // sync GPS indicator on tree page
+  if(id==='tree') updateTreeGPS();
+}
+function goPatrol()  {show('patrol');refreshObs();}
+function goSign()    {
+  document.getElementById('s-rd').value=S.curRD;
+  document.getElementById('s-pr').value=S.curPR;
+  document.getElementById('sign-loc').textContent=S.curRD+' '+S.curPR;
+  show('sign');
+}
+function goDamage()  {
+  document.getElementById('d-rd').value=S.curRD;
+  document.getElementById('d-pr').value=S.curPR;
+  document.getElementById('dmg-loc').textContent=S.curRD+' '+S.curPR;
+  show('damage');
+}
+function goTree()    {
+  document.getElementById('t-rd').value=S.curRD;
+  document.getElementById('t-pr').value=S.curPR;
+  document.getElementById('tree-loc').textContent=S.curRD+' '+S.curPR;
+  show('tree');
+}
+
+// ══ PATROL ════════════════════════════════════════════════════════════════════
+function startPatrol(){
+  S.agent=document.getElementById('inp-agent').value.trim();
+  S.rd=document.getElementById('inp-rd').value.trim();
+  S.vehicule=document.getElementById('inp-vehicule').value.trim();
+  if(!S.agent&&!S.rd){alert('Saisissez au moins le nom ou la route.');return;}
+  S.patrolStart=nowStr();
+  S.observations=[];
+  S.curRD=S.rd;S.curPR='';
+  S.gpsOrigin=null;
+  document.getElementById('cur-rd').value=S.rd;
+  document.getElementById('cur-pr').value='';
+  document.getElementById('patrol-sub').textContent='● '+S.agent+' — '+(S.rd||'Circuit libre');
+  startGPS();
+  show('patrol');
+}
+function endPatrol(){stopGPS();buildReport();show('report');}
+function newPatrol(){stopGPS();S.observations=[];show('home');}
+
+// ══ GPS ═══════════════════════════════════════════════════════════════════════
+function startGPS(){
+  if(!navigator.geolocation){setGPS(false,'GPS non supporté sur cet appareil');return;}
+  setGPS(false,'Demande de permission GPS…');
+  // Sur Android, appeler d'abord getCurrentPosition pour déclencher la permission
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      onGPSOk(pos);
+      // Puis watchPosition en continu
+      const opts={enableHighAccuracy:true,timeout:30000,maximumAge:4000};
+      S.gpsWatchId=navigator.geolocation.watchPosition(onGPSOk,onGPSErr,opts);
+    },
+    err=>{
+      onGPSErr(err);
+      // Réessayer watchPosition quand même
+      const opts={enableHighAccuracy:false,timeout:30000,maximumAge:10000};
+      S.gpsWatchId=navigator.geolocation.watchPosition(onGPSOk,onGPSErrSilent,opts);
+    },
+    {enableHighAccuracy:true,timeout:15000,maximumAge:0}
+  );
+}
+function stopGPS(){
+  if(S.gpsWatchId!==null){navigator.geolocation.clearWatch(S.gpsWatchId);S.gpsWatchId=null;}
+}
+function onGPSOk(pos){
+  const{latitude:lat,longitude:lon,accuracy:acc}=pos.coords;
+  S.gps={lat,lon,acc:Math.round(acc),ok:true};
+  if(!S.gpsOrigin)S.gpsOrigin={lat,lon};
+  const pr=calcPR(lat,lon);
+  setGPS(true,`📡 ${lat.toFixed(5)}, ${lon.toFixed(5)}  ±${Math.round(acc)}m\n${pr}`);
+  // Remplir PR si vide
+  const prEl=document.getElementById('cur-pr');
+  if(prEl&&!prEl.value){prEl.value=pr;S.curPR=pr;}
+  updateTreeGPS();
+}
+function onGPSErr(err){
+  const m={1:'❌ Permission GPS refusée\nActivez la localisation dans Paramètres → Applications → Chrome → Autorisations',2:'⚠️ Signal GPS indisponible\nAllez à l\'extérieur ou activez le GPS réseau',3:'⏱ Délai GPS dépassé — nouvel essai…'};
+  setGPS(false,m[err.code]||'Erreur GPS code '+err.code);
+}
+function onGPSErrSilent(){}
+function setGPS(ok,txt){
+  ['gdot','tree-gdot'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.className='gdot'+(ok?'':' s');
+  });
+  ['gtxt','tree-gtxt'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=txt;
+  });
+}
+function updateTreeGPS(){
+  if(!S.gps.ok)return;
+  const el=document.getElementById('cad-result');
+  if(el&&(el.textContent==='GPS requis'||el.textContent.startsWith('📍')))
+    el.textContent=`📍 Position fixée ±${S.gps.acc}m — appuyez sur 🔍 Interroger`;
+}
+function calcPR(lat,lon){
+  if(!S.gpsOrigin)return'';
+  const dlat=(lat-S.gpsOrigin.lat)*111320;
+  const dlon=(lon-S.gpsOrigin.lon)*111320*Math.cos(lat*Math.PI/180);
+  const dist=Math.sqrt(dlat*dlat+dlon*dlon);
+  const km=dist/1000;
+  const base=Math.floor(km);
+  const rest=String(Math.round((km-base)*1000)).padStart(3,'0');
+  return`PR ${base}+${rest}`;
+}
+
+// ══ PHOTO — déclenchement natif Android ══════════════════════════════════════
+// Crée un input file invisible, le déclenche programmatiquement
+// capture="environment" → caméra arrière sur Android Chrome
+function triggerCamera(forWhat){
+  const inp=document.createElement('input');
+  inp.type='file';
+  inp.accept='image/*';
+  inp.setAttribute('capture','environment');
+  inp.style.display='none';
+  document.body.appendChild(inp);
+  inp.onchange=e=>{
+    handleCapture(e,forWhat);
+    document.body.removeChild(inp);
+  };
+  inp.oncancel=()=>document.body.removeChild(inp);
+  inp.click();
+}
+function handleCapture(evt,forWhat){
+  const file=evt.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const url=e.target.result;
+    S.photos[forWhat]=url;
+    const pr=S.curPR||calcPR(S.gps.lat,S.gps.lon)||'';
+    if(forWhat==='sign'){
+      renderPrev('sign-prev',url);
+      document.getElementById('s-rd').value=S.curRD;
+      document.getElementById('s-pr').value=pr;
+      document.getElementById('sign-loc').textContent=S.curRD+' '+pr;
+      if(S.screen!=='sign')show('sign');
+    }else if(forWhat==='damage'){
+      renderPrev('dmg-prev',url);
+      document.getElementById('d-rd').value=S.curRD;
+      document.getElementById('d-pr').value=pr;
+      document.getElementById('dmg-loc').textContent=S.curRD+' '+pr;
+      if(S.screen!=='damage')show('damage');
+    }else{
+      renderPrev('tree-prev',url);
+      document.getElementById('t-rd').value=S.curRD;
+      document.getElementById('t-pr').value=pr;
+      document.getElementById('tree-loc').textContent=S.curRD+' '+pr;
+      if(S.screen!=='tree')show('tree');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+function renderPrev(id,url){
+  const el=document.getElementById(id);
+  if(el)el.innerHTML=`<div class="card" style="padding:6px;margin-bottom:10px"><img src="${url}" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px"></div>`;
+}
+
+// ══ CADASTRE — sources sans clé API ══════════════════════════════════════════
+// Source 1 : WFS data.gouv.fr cadastre (gratuit, sans clé)
+// Source 2 : Géocodage inverse adresse data.gouv.fr (fallback commune)
+// Source 3 : Nominatim OpenStreetMap (fallback final)
+async function fetchCadastre(){
+  const el=document.getElementById('cad-result');
+  if(!S.gps.ok){el.textContent='❌ GPS non fixé — patientez quelques secondes';return;}
+  el.innerHTML='<span style="color:var(--accent)">⏳ Interrogation cadastre…</span>';
+  const{lat,lon}=S.gps;
+
+  // ── Source 1 : WFS cadastre data.gouv.fr ──────────────────────────────────
+  try{
+    // API publique cadastre.data.gouv.fr — aucune clé requise
+    const url=`https://cadastre.data.gouv.fr/bundler/cadastre-etalab/communes/search?`+
+              `lat=${lat}&lon=${lon}&type=Point&_limit=1`;
+    // On utilise l'API WFS GeoServer de data.gouv.fr
+    const wfs=`https://wxs.ign.fr/parcellaire/geoportail/wfs?`+
+      `SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature`+
+      `&TYPENAMES=BDPARCELLAIRE-VECTEUR_WLD_BDD_WGS84G:parcelle`+
+      `&CQL_FILTER=INTERSECTS(the_geom,POINT(${lon}%20${lat}))`+
+      `&OUTPUTFORMAT=application/json&COUNT=1`;
+
+    // Essai direct via l'API géocodage cadastre (la plus fiable sans clé)
+    const r=await fetch(
+      `https://api-adresse.data.gouv.fr/reverse/?lon=${lon}&lat=${lat}&type=housenumber`,
+      {signal:AbortSignal.timeout(8000)}
+    );
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j=await r.json();
+    const feat=j.features?.[0];
+    if(!feat) throw new Error('no_feature');
+
+    const props=feat.properties;
+    const city    = props.city||props.municipality||'–';
+    const postcode= props.postcode||'–';
+    const insee   = props.citycode||'–';
+    const street  = props.street||props.name||'';
+
+    // ── Source 2 : parcelle via cadastre.data.gouv.fr tiles ─────────────────
+    // URL format : /communes/{insee}/cadastre-{type}.json.gz
+    // On utilise le service de géocodage parcellaire
+    const r2=await fetch(
+      `https://geocodage.ign.fr/look4/parcel/reverse?`+
+      `lon=${lon}&lat=${lat}&returnTrueGeometry=false`,
+      {signal:AbortSignal.timeout(8000)}
+    );
+    if(r2.ok){
+      const j2=await r2.json();
+      const p=j2.features?.[0]?.properties;
+      if(p){
+        const sec  = p.section||p.sectionP||'–';
+        const num  = p.numero||p.numeroP||'–';
+        const surf = p.contenance?Math.round(p.contenance)+' m²':'–';
+        const com  = p.nomCommune||city;
+        const ins  = p.codeINSEE||insee;
+        afficherCadastre(el,sec,num,com,ins,surf);
+        return;
+      }
+    }
+
+    // ── Fallback : afficher commune + adresse sans numéro parcelle ───────────
+    el.innerHTML=
+      `⚠️ <b style="color:var(--yellow)">Parcelle non identifiée</b><br>`+
+      `<span style="color:var(--accent)">Commune :</span> <b style="color:#fff">${city} (${postcode})</b><br>`+
+      `<span style="color:var(--accent)">INSEE :</span> ${insee}`+
+      (street?`<br><span style="color:var(--accent)">Voie :</span> ${street}`:'');
+    document.getElementById('t-cad-com').value=city+' '+postcode;
+    document.getElementById('t-cad-sec').value='';
+    document.getElementById('t-cad-num').value='';
+    document.getElementById('t-cad-surf').value='';
+
+  }catch(e){
+    // ── Fallback final : Nominatim OSM ────────────────────────────────────────
+    try{
+      const r3=await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+        {headers:{'Accept-Language':'fr'},signal:AbortSignal.timeout(8000)}
+      );
+      const j3=await r3.json();
+      const a=j3.address||{};
+      const city=a.city||a.town||a.village||a.hamlet||'–';
+      const postcode=a.postcode||'–';
+      const road=a.road||a.hamlet||'';
+      el.innerHTML=
+        `⚠️ <b style="color:var(--yellow)">Parcelle non disponible</b><br>`+
+        `<span style="color:var(--accent)">Commune :</span> <b style="color:#fff">${city} (${postcode})</b>`+
+        (road?`<br><span style="color:var(--accent)">Voie :</span> ${road}`:'');
+      document.getElementById('t-cad-com').value=city+' '+postcode;
+    }catch(e2){
+      el.innerHTML=`❌ <b style="color:var(--red)">Connexion internet requise</b><br>`+
+        `<span style="font-size:10px;color:var(--muted)">Le cadastre nécessite une connexion. GPS: ±${S.gps.acc}m fixé.</span>`;
+    }
+  }
+}
+
+function afficherCadastre(el,sec,num,com,insee,surf){
+  el.innerHTML=
+    `<span style="color:var(--accent)">Section :</span> <b style="color:#fff">${sec}</b> &nbsp;`+
+    `<span style="color:var(--accent)">Parcelle :</span> <b style="color:#fff">${num}</b><br>`+
+    `<span style="color:var(--accent)">Commune :</span> ${com} (${insee})<br>`+
+    `<span style="color:var(--accent)">Surface :</span> ${surf}`;
+  document.getElementById('t-cad-sec').value=sec;
+  document.getElementById('t-cad-num').value=num;
+  document.getElementById('t-cad-com').value=com+' ('+insee+')';
+  document.getElementById('t-cad-surf').value=surf;
+}
+
+// ══ RENDER COMPOSANTS ════════════════════════════════════════════════════════
+function renderSignTypes(){
+  const cat=document.getElementById('s-cat').value;
+  const sel=document.getElementById('s-type');
+  sel.innerHTML='<option value="">-- Type --</option>';
+  const list=(SIGN_TYPES[cat]||[]).concat(customSigns.filter(c=>c.cat===cat).map(c=>c.code+' - '+c.label));
+  list.forEach(t=>{const o=document.createElement('option');o.value=o.textContent=t;sel.appendChild(o);});
+  updateSignVisual();
+  renderCustomSignList();
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('s-type').addEventListener('change',updateSignVisual);
+});
+function updateSignVisual(){
+  const cat=document.getElementById('s-cat').value;
+  const type=document.getElementById('s-type').value;
+  const wrap=document.getElementById('sign-visual-wrap');
+  if(!cat||!type){wrap.style.display='none';return;}
+  const code=type.split(' - ')[0]||type;
+  const desc=type.split(' - ')[1]||'';
+  const svg=getSignSVG(cat,type);
+  const svgUrl='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svg)));
+  document.getElementById('sign-visual-img').src=svgUrl;
+  document.getElementById('sign-visual-label').textContent=code;
+  document.getElementById('sign-visual-desc').textContent=desc;
+  wrap.style.display='block';
+}
+function addCustomSign(){
+  const code=document.getElementById('new-sign-code').value.trim();
+  const label=document.getElementById('new-sign-label').value.trim();
+  const cat=document.getElementById('s-cat').value;
+  if(!code||!label){alert('Renseignez le code et le libellé.');return;}
+  customSigns.push({code,label,cat:cat||'Indication'});
+  localStorage.setItem('customSigns',JSON.stringify(customSigns));
+  document.getElementById('new-sign-code').value='';
+  document.getElementById('new-sign-label').value='';
+  renderSignTypes();
+  renderCustomSignList();
+}
+function deleteCustomSign(idx){
+  customSigns.splice(idx,1);
+  localStorage.setItem('customSigns',JSON.stringify(customSigns));
+  renderSignTypes();
+  renderCustomSignList();
+}
+function renderCustomSignList(){
+  const el=document.getElementById('custom-sign-list');
+  if(!el)return;
+  if(!customSigns.length){el.innerHTML='<div style="color:var(--muted);font-size:11px">Aucun panneau personnalisé ajouté.</div>';return;}
+  el.innerHTML=customSigns.map((c,i)=>`
+    <div class="signrow">
+      <div style="flex:1;font-size:12px"><b>${c.code}</b> — ${c.label} <span style="color:var(--muted);font-size:10px">(${c.cat})</span></div>
+      <button class="btn bo bsm" style="border-color:var(--red);color:var(--red);padding:6px 10px" onclick="deleteCustomSign(${i})">✕</button>
+    </div>`).join('');
+}
+function renderChips(cid,items,hid){
+  const el=document.getElementById(cid);if(!el)return;
+  el.innerHTML='';
+  items.forEach(item=>{
+    const btn=document.createElement('button');
+    btn.className='chip';
+    btn.textContent=(item.i?item.i+' ':'')+item.v;
+    btn.style.borderColor=item.c;
+    btn.dataset.val=item.v;btn.dataset.col=item.c;
+    btn.onclick=()=>selChip(cid,item.v,hid);
+    el.appendChild(btn);
+  });
+}
+function selChip(cid,val,hid){
+  document.querySelectorAll('#'+cid+' .chip').forEach(c=>{
+    const a=c.dataset.val===val;
+    c.style.background=a?c.dataset.col:'transparent';
+    c.style.color=a?'#fff':'var(--muted)';
+  });
+  const h=document.getElementById(hid);if(h)h.value=val;
+}
+function renderDmgTypes(){
+  const el=document.getElementById('dmg-types');if(!el)return;
+  el.innerHTML='';
+  DAMAGES.forEach(d=>{
+    const btn=document.createElement('button');
+    btn.className='tbtn';btn.innerHTML=d.ic+' '+d.n;
+    btn.style.borderColor=d.col;btn.dataset.n=d.n;btn.dataset.col=d.col;
+    btn.onclick=()=>selDmg(d.n);
+    el.appendChild(btn);
+  });
+}
+function selDmg(name){
+  document.getElementById('d-type').value=name;
+  document.querySelectorAll('#dmg-types .tbtn').forEach(b=>{
+    const a=b.dataset.n===name;
+    b.style.background=a?b.dataset.col:'var(--card)';
+    b.style.color=a?'#fff':'var(--muted)';
+  });
+  const d=DAMAGES.find(x=>x.n===name);if(!d)return;
+  // Section de route pour Remontée de liant
+  document.getElementById('d-section-wrap').style.display=d.section?'block':'none';
+  // Gravité
+  const wrap=document.getElementById('d-sev-wrap');
+  const sev=document.getElementById('dmg-sev');
+  wrap.style.display='block';sev.innerHTML='';
+  document.getElementById('d-sev').value='';
+  d.sev.forEach(sv=>{
+    const btn=document.createElement('button');
+    btn.className='chip';btn.textContent=sv;
+    btn.style.borderColor=d.col;btn.dataset.val=sv;btn.dataset.col=d.col;
+    btn.onclick=()=>selChip('dmg-sev',sv,'d-sev');
+    sev.appendChild(btn);
+  });
+}
+function renderTreeTypes(){
+  const el=document.getElementById('tree-types');if(!el)return;
+  el.innerHTML='';
+  TREE_DANGERS.forEach(d=>{
+    const btn=document.createElement('button');
+    btn.className='tbtn';btn.innerHTML=d.ic+' '+d.n;
+    btn.style.borderColor=d.col;btn.dataset.n=d.n;btn.dataset.col=d.col;
+    btn.onclick=()=>selTree(d.n);
+    el.appendChild(btn);
+  });
+}
+function selTree(name){
+  document.getElementById('t-danger').value=name;
+  document.querySelectorAll('#tree-types .tbtn').forEach(b=>{
+    const a=b.dataset.n===name;
+    b.style.background=a?b.dataset.col:'var(--card)';
+    b.style.color=a?'#fff':'var(--muted)';
+  });
+  const d=TREE_DANGERS.find(x=>x.n===name);if(!d)return;
+  const wrap=document.getElementById('t-sev-wrap');
+  const sev=document.getElementById('tree-sev');
+  wrap.style.display='block';sev.innerHTML='';
+  document.getElementById('t-sev').value='';
+  d.sev.forEach(sv=>{
+    const btn=document.createElement('button');
+    btn.className='chip';btn.textContent=sv;
+    btn.style.borderColor=d.col;btn.dataset.val=sv;btn.dataset.col=d.col;
+    btn.onclick=()=>selChip('tree-sev',sv,'t-sev');
+    sev.appendChild(btn);
+  });
+}
+
+// ══ SAUVEGARDES ═══════════════════════════════════════════════════════════════
+function getDefects(){
+  const d=[];
+  if(document.getElementById('chk-rouille')?.checked)d.push('Rouille');
+  if(document.getElementById('chk-vandal')?.checked)d.push('Vandalisme');
+  if(document.getElementById('chk-incline')?.checked)d.push('Incliné');
+  if(document.getElementById('chk-veg')?.checked)d.push('Végétation');
+  return d.join(', ');
+}
+function saveSign(){
+  const type=document.getElementById('s-type').value;
+  const st=document.getElementById('s-state').value;
+  if(!type||!st){alert('Sélectionnez le type et l\'état.');return;}
+  S.observations.unshift({
+    id:genId(),obsType:'sign',date:nowStr(),
+    rd:document.getElementById('s-rd').value||S.curRD,
+    pr:document.getElementById('s-pr').value||S.curPR,
+    cat:document.getElementById('s-cat').value,type,state:st,
+    side:document.getElementById('s-side').value,
+    dir:document.getElementById('s-dir').value,
+    defects:getDefects(),
+    priority:document.getElementById('s-priority').value,
+    notes:document.getElementById('s-notes').value,
+    photoUrl:S.photos.sign,gps:{...S.gps},
+  });
+  resetSignForm();updateStats();showFlash();goPatrol();
+}
+function saveDamage(){
+  const type=document.getElementById('d-type').value;
+  if(!type){alert('Sélectionnez le type de dommage.');return;}
+  const d=DAMAGES.find(x=>x.n===type);
+  S.observations.unshift({
+    id:genId(),obsType:'damage',date:nowStr(),
+    rd:document.getElementById('d-rd').value||S.curRD,
+    pr:document.getElementById('d-pr').value||S.curPR,
+    type,severity:document.getElementById('d-sev').value,
+    voie:document.getElementById('d-voie').value,
+    surface:document.getElementById('d-surface').value,
+    prDebut:d?.section?document.getElementById('d-pr-debut').value:'',
+    prFin:d?.section?document.getElementById('d-pr-fin').value:'',
+    priority:document.getElementById('d-priority').value,
+    evolution:document.getElementById('d-evol').value,
+    notes:document.getElementById('d-notes').value,
+    photoUrl:S.photos.damage,gps:{...S.gps},
+  });
+  resetDmgForm();updateStats();showFlash();goPatrol();
+}
+function saveTree(){
+  const danger=document.getElementById('t-danger').value;
+  if(!danger){alert('Sélectionnez le type de danger.');return;}
+  S.observations.unshift({
+    id:genId(),obsType:'tree',date:nowStr(),
+    rd:document.getElementById('t-rd').value||S.curRD,
+    pr:document.getElementById('t-pr').value||S.curPR,
+    danger,severity:document.getElementById('t-sev').value,
+    side:document.getElementById('t-side').value,
+    dist:document.getElementById('t-dist').value,
+    priority:document.getElementById('t-priority').value,
+    action:document.getElementById('t-action').value,
+    notes:document.getElementById('t-notes').value,
+    photoUrl:S.photos.tree,gps:{...S.gps},
+    cadastre:{
+      sec:document.getElementById('t-cad-sec').value,
+      num:document.getElementById('t-cad-num').value,
+      com:document.getElementById('t-cad-com').value,
+      surf:document.getElementById('t-cad-surf').value,
+    },
+  });
+  resetTreeForm();updateStats();showFlash();goPatrol();
+}
+
+function resetSignForm(){
+  ['s-rd','s-pr','s-notes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['s-cat','s-type','s-side','s-dir'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('s-state').value='';document.getElementById('s-priority').value='';
+  document.getElementById('sign-visual-wrap').style.display='none';
+  ['chk-rouille','chk-vandal','chk-incline','chk-veg'].forEach(id=>{const e=document.getElementById(id);if(e)e.checked=false;});
+  document.querySelectorAll('#sign-states .chip,#sign-priority .chip').forEach(c=>{c.style.background='transparent';c.style.color='var(--muted)';});
+  document.getElementById('sign-prev').innerHTML='';
+  S.photos.sign='';
+}
+function resetDmgForm(){
+  ['d-rd','d-pr','d-notes','d-surface','d-pr-debut','d-pr-fin'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['d-voie','d-evol'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('d-type').value='';document.getElementById('d-sev').value='';document.getElementById('d-priority').value='';
+  document.getElementById('d-sev-wrap').style.display='none';
+  document.getElementById('d-section-wrap').style.display='none';
+  document.querySelectorAll('#dmg-types .tbtn').forEach(b=>{b.style.background='var(--card)';b.style.color='var(--muted)';});
+  document.getElementById('dmg-prev').innerHTML='';S.photos.damage='';
+}
+function resetTreeForm(){
+  ['t-rd','t-pr','t-notes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['t-side','t-dist','t-action'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('t-danger').value='';document.getElementById('t-sev').value='';document.getElementById('t-priority').value='';
+  document.getElementById('t-sev-wrap').style.display='none';
+  document.querySelectorAll('#tree-types .tbtn').forEach(b=>{b.style.background='var(--card)';b.style.color='var(--muted)';});
+  ['t-cad-sec','t-cad-num','t-cad-com','t-cad-surf'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('cad-result').textContent='GPS requis';
+  document.getElementById('tree-prev').innerHTML='';S.photos.tree='';
+}
+
+// ══ STATS & LISTE ═════════════════════════════════════════════════════════════
+function updateStats(){
+  document.getElementById('st-s').textContent=S.observations.filter(o=>o.obsType==='sign').length;
+  document.getElementById('st-d').textContent=S.observations.filter(o=>o.obsType==='damage').length;
+  document.getElementById('st-t').textContent=S.observations.filter(o=>o.obsType==='tree').length;
+  document.getElementById('st-u').textContent=S.observations.filter(o=>o.priority?.includes('Urgent')||o.state==='Manquant').length;
+}
+function scol(v){return{Bon:'#27ae60',Dégradé:'#f0a500',Manquant:'#e74c3c','À remplacer':'#8e44ad',Illisible:'#7f8c8d'}[v]||'#5a8099';}
+function pcol(v){return v?.includes('Urgent')?'#e74c3c':v?.includes('Court')?'#f0a500':v?.includes('Planifié')?'#2980b9':'#7f8c8d';}
+function obsHTML(o,full){
+  const is=o.obsType==='sign',it=o.obsType==='tree';
+  const col=is?scol(o.state):it?'#2ecc71':pcol(o.priority);
+  const label=is?`🚦 ${o.type}`:it?`🌳 ${o.danger}`:`🛣️ ${o.type}`;
+  const badge1=is&&o.state?`<span class="badge" style="background:${scol(o.state)}">${o.state}</span>`:'';
+  const badge2=!is&&o.severity?`<span class="badge" style="background:${col}">${o.severity}</span>`:'';
+  const badge3=o.priority?`<span class="badge" style="background:${pcol(o.priority)};font-size:10px">${o.priority}</span>`:'';
+  const thumb=o.photoUrl?`<img src="${o.photoUrl}" class="oth">`:'';
+  const gpsL=o.gps?.ok&&full?`<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px">📡 ${o.gps.lat.toFixed(5)}, ${o.gps.lon.toFixed(5)} ±${o.gps.acc}m</div>`:'';
+  const cadL=it&&o.cadastre?.sec&&full?`<div style="font-family:var(--mono);font-size:10px;color:var(--accent);margin-top:2px">📐 Sec.${o.cadastre.sec} Parc.${o.cadastre.num} · ${o.cadastre.com}${o.cadastre.surf?' · '+o.cadastre.surf:''}</div>`:'';
+  const secL=o.prDebut&&o.prFin&&full?`<div style="color:var(--accent);font-size:11px;margin-top:2px">📏 Section ${o.prDebut} → ${o.prFin}</div>`:'';
+  const noteL=full&&o.notes?`<div style="color:var(--muted);font-size:11px;margin-top:2px;font-style:italic">"${o.notes}"</div>`:'';
+  const defL=full&&is&&o.defects?`<div style="color:var(--muted);font-size:11px;margin-top:2px">⚠ ${o.defects}</div>`:'';
+  const actL=full&&it&&o.action?`<div style="color:var(--muted);font-size:11px;margin-top:2px">🔧 ${o.action}</div>`:'';
+  const idL=full?`<div style="font-family:var(--mono);color:var(--muted);font-size:10px;margin-top:3px">${o.id} · ${o.date}</div>`:'';
+  return`<div class="ocard" style="border-left-color:${col}">
+  <div class="oh">
+    <div style="flex:1">
+      <div style="font-weight:700;font-size:13px">${label}</div>
+      <div class="ometa">${o.rd||'?'} · ${o.pr||'–'} ${badge1}${badge2}${badge3}</div>
+      ${gpsL}${cadL}${secL}${defL}${actL}${noteL}${idL}
+    </div>${thumb}
+  </div></div>`;
+}
+function refreshObs(){
+  updateStats();
+  const el=document.getElementById('patrol-obs');if(!el)return;
+  el.innerHTML=S.observations.slice(0,5).map(o=>obsHTML(o,false)).join('')||'<div style="color:var(--muted);font-size:12px;padding:8px 0">Aucune observation…</div>';
+}
+
+// ══ RAPPORT ═══════════════════════════════════════════════════════════════════
+function buildReport(){
+  const sg=S.observations.filter(o=>o.obsType==='sign');
+  const dm=S.observations.filter(o=>o.obsType==='damage');
+  const tr=S.observations.filter(o=>o.obsType==='tree');
+  const ur=S.observations.filter(o=>o.priority?.includes('Urgent')||o.state==='Manquant').length;
+  document.getElementById('rep-meta').innerHTML=`<div style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--muted)"><span style="color:var(--text)">Agent :</span> ${S.agent||'–'} &nbsp;<span style="color:var(--text)">Véhicule :</span> ${S.vehicule||'–'} &nbsp;<span style="color:var(--text)">Route :</span> ${S.rd||'Multiple'}<br><span style="color:var(--text)">Début :</span> ${S.patrolStart||'–'} &nbsp;<span style="color:var(--text)">Fin :</span> ${nowStr()} &nbsp;<span style="color:var(--text)">Total obs. :</span> ${S.observations.length}</div>`;
+  document.getElementById('rep-stats').innerHTML=`<div class="sbox"><div class="sn" style="color:var(--accent)">${sg.length}</div><div class="sl">Panneaux</div></div><div class="sbox"><div class="sn" style="color:var(--yellow)">${dm.length}</div><div class="sl">Dommages</div></div><div class="sbox"><div class="sn" style="color:#2ecc71">${tr.length}</div><div class="sl">Arbres</div></div><div class="sbox"><div class="sn" style="color:var(--red)">${ur}</div><div class="sl">Urgents</div></div>`;
+  document.getElementById('rep-trees').innerHTML=tr.length?tr.map(o=>obsHTML(o,true)).join(''):'<div style="color:var(--muted);font-size:12px">Aucun arbre.</div>';
+  document.getElementById('rep-signs').innerHTML=sg.length?sg.map(o=>obsHTML(o,true)).join(''):'<div style="color:var(--muted);font-size:12px">Aucun panneau.</div>';
+  document.getElementById('rep-dmg').innerHTML=dm.length?dm.map(o=>obsHTML(o,true)).join(''):'<div style="color:var(--muted);font-size:12px">Aucun dommage.</div>';
+}
+
+function printReport(){
+  const sg=S.observations.filter(o=>o.obsType==='sign');
+  const dm=S.observations.filter(o=>o.obsType==='damage');
+  const tr=S.observations.filter(o=>o.obsType==='tree');
+  const sc=v=>({Bon:'#27ae60',Dégradé:'#f0a500',Manquant:'#e74c3c','À remplacer':'#8e44ad',Illisible:'#7f8c8d'}[v]||'#888');
+  const pc=v=>v?.includes('Urgent')?'#e74c3c':v?.includes('Court')?'#f0a500':v?.includes('Planifié')?'#2980b9':'#888';
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><style>
+body{font-family:Arial,sans-serif;margin:16px;color:#111;font-size:11px}
+h1{color:#1a3a5c;border-bottom:3px solid #2ecc71;padding-bottom:5px;font-size:16px;margin-bottom:10px}
+h2{color:#1a3a5c;font-size:12px;margin:16px 0 5px;border-left:3px solid #2ecc71;padding-left:7px}
+.meta{background:#f0f4f8;padding:9px 12px;border-radius:5px;margin:8px 0;font-size:11px;line-height:1.9}
+table{width:100%;border-collapse:collapse;font-size:10px;margin:6px 0;page-break-inside:auto}
+th{background:#1a3a5c;color:#fff;padding:5px 4px;text-align:left}
+td{padding:4px;border-bottom:1px solid #eee;vertical-align:top}
+tr:nth-child(even){background:#fafafa}
+.b{padding:2px 6px;border-radius:7px;color:#fff;font-size:9px;font-weight:700}
+img{max-width:60px;max-height:45px;border-radius:3px;object-fit:cover}
+.g{font-size:8px;color:#888;font-family:monospace}
+footer{color:#aaa;font-size:9px;margin-top:20px;border-top:1px solid #eee;padding-top:6px;text-align:center}
+</style></head><body>
+<h1>📋 Rapport Patrouille Routière — PATROL TERRAIN</h1>
+<div class="meta"><b>Agent :</b> ${S.agent||'–'} &nbsp;<b>Véhicule :</b> ${S.vehicule||'–'} &nbsp;<b>Route :</b> ${S.rd||'Multiple'}<br><b>Début :</b> ${S.patrolStart||'–'} &nbsp;<b>Fin :</b> ${nowStr()} &nbsp;<b>Total :</b> ${S.observations.length} obs. &nbsp;<b>Panneaux :</b> ${sg.length} &nbsp;<b>Dommages :</b> ${dm.length} &nbsp;<b>Arbres :</b> ${tr.length}</div>
+<h2>🌳 Arbres dangereux (${tr.length})</h2>
+<table><tr><th>ID</th><th>Date</th><th>RD</th><th>PR</th><th>GPS</th><th>Cadastre</th><th>Danger</th><th>Risque</th><th>Côté</th><th>Dist.</th><th>Priorité</th><th>Action</th><th>Notes</th><th>Photo</th></tr>
+${tr.map(t=>`<tr><td class="g">${t.id}</td><td>${t.date}</td><td>${t.rd||'–'}</td><td>${t.pr||'–'}</td>
+<td class="g">${t.gps?.ok?t.gps.lat.toFixed(5)+'<br>'+t.gps.lon.toFixed(5)+'<br>±'+t.gps.acc+'m':'-'}</td>
+<td class="g">${t.cadastre?.sec?`Sec.${t.cadastre.sec} Parc.${t.cadastre.num}<br>${t.cadastre.com}<br>${t.cadastre.surf||''}`:'-'}</td>
+<td><b>${t.danger}</b></td>
+<td><span class="b" style="background:${pc(t.priority)||'#888'}">${t.severity||'–'}</span></td>
+<td>${t.side||'–'}</td><td>${t.dist||'–'}</td>
+<td>${t.priority?`<span class="b" style="background:${pc(t.priority)}">${t.priority}</span>`:'–'}</td>
+<td>${t.action||'–'}</td><td>${t.notes||'–'}</td>
+<td>${t.photoUrl?`<img src="${t.photoUrl}">`:'-'}</td></tr>`).join('')}
+</table>
+<h2>🚦 Panneaux (${sg.length})</h2>
+<table><tr><th>ID</th><th>Date</th><th>RD</th><th>PR</th><th>GPS</th><th>Catégorie</th><th>Type</th><th>Côté</th><th>État</th><th>Défauts</th><th>Priorité</th><th>Notes</th><th>Photo</th></tr>
+${sg.map(s=>`<tr><td class="g">${s.id}</td><td>${s.date}</td><td>${s.rd||'–'}</td><td>${s.pr||'–'}</td>
+<td class="g">${s.gps?.ok?s.gps.lat.toFixed(5)+'<br>'+s.gps.lon.toFixed(5)+'<br>±'+s.gps.acc+'m':'-'}</td>
+<td>${s.cat||'–'}</td><td>${s.type}</td><td>${s.side||'–'} ${s.dir||''}</td>
+<td><span class="b" style="background:${sc(s.state)}">${s.state}</span></td>
+<td>${s.defects||'–'}</td>
+<td>${s.priority?`<span class="b" style="background:${pc(s.priority)}">${s.priority}</span>`:'–'}</td>
+<td>${s.notes||'–'}</td><td>${s.photoUrl?`<img src="${s.photoUrl}">`:'-'}</td></tr>`).join('')}
+</table>
+<h2>🛣️ Dommages (${dm.length})</h2>
+<table><tr><th>ID</th><th>Date</th><th>RD</th><th>PR</th><th>GPS</th><th>Type</th><th>Gravité</th><th>Section</th><th>Voie</th><th>Surface</th><th>Évolution</th><th>Priorité</th><th>Notes</th><th>Photo</th></tr>
+${dm.map(d=>`<tr><td class="g">${d.id}</td><td>${d.date}</td><td>${d.rd||'–'}</td><td>${d.pr||'–'}</td>
+<td class="g">${d.gps?.ok?d.gps.lat.toFixed(5)+'<br>'+d.gps.lon.toFixed(5)+'<br>±'+d.gps.acc+'m':'-'}</td>
+<td>${d.type}</td>
+<td><span class="b" style="background:${pc(d.priority)||'#888'}">${d.severity||'–'}</span></td>
+<td>${d.prDebut&&d.prFin?d.prDebut+' → '+d.prFin:'–'}</td>
+<td>${d.voie||'–'}</td><td>${d.surface||'–'}</td><td>${d.evolution||'–'}</td>
+<td>${d.priority?`<span class="b" style="background:${pc(d.priority)}">${d.priority}</span>`:'–'}</td>
+<td>${d.notes||'–'}</td><td>${d.photoUrl?`<img src="${d.photoUrl}">`:'-'}</td></tr>`).join('')}
+</table>
+<footer>PATROL TERRAIN (sans IA) · ${nowStr()}</footer>
+</body></html>`);
+  w.document.close();setTimeout(()=>w.print(),500);
+}
+
+// ══ UTILS ═════════════════════════════════════════════════════════════════════
+function genId(){return'OBS-'+Date.now();}
+function nowStr(){return new Date().toLocaleString('fr-FR');}
+function showFlash(){const e=document.getElementById('flash');e.style.display='block';setTimeout(()=>e.style.display='none',1200);}
+
+// ══ INIT ══════════════════════════════════════════════════════════════════════
+document.getElementById('home-date').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+renderChips('sign-states',STATES,'s-state');
+renderChips('sign-priority',PRIOS,'s-priority');
+renderChips('dmg-priority',PRIOS,'d-priority');
+renderChips('tree-priority',PRIOS,'t-priority');
+renderDmgTypes();
+renderTreeTypes();
+renderCustomSignList();
+</script>
+</body>
+</html>
